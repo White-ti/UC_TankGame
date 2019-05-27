@@ -5,3 +5,4 @@ This read me acts as both commits but also a mini HTML code for example you can 
 
 ## Inclusions
 Setting up GitHub, GDD etc
+Joined Github to Sourcetree

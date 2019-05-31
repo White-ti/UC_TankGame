@@ -3,6 +3,7 @@
 
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -19,9 +20,14 @@ void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet) {
 	Barrel = BarrelToSet;
 }
 
+void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet) {
+	Turret = TurretToSet;
+}
+
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 	if (!Barrel) { return; }
+	if (!Turret) { return; }
 
 	FVector OutLaunchVelocity(0);
 	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
@@ -31,12 +37,13 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed) {
 		auto BarrelLocation = Barrel->GetComponentLocation().ToString();
 		auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: %s aiming at: %s  from %s"), Time, *OurTankName, *(AimDirection.ToString()), *BarrelLocation);
+		//UE_LOG(LogTemp, Warning, TEXT("%f: %s aiming at: %s  from %s"), Time, *OurTankName, *(AimDirection.ToString()), *BarrelLocation);
 		MoveBarrel(AimDirection);
+		MoveTurret(AimDirection);
 	}
 	else {
 		auto Time = GetWorld()->GetTimeSeconds();
-		UE_LOG(LogTemp, Warning, TEXT("%f: No Solution"), Time);
+		//UE_LOG(LogTemp, Warning, TEXT("%f: No Solution"), Time);
 	}
 }
 
@@ -47,6 +54,15 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 	auto AimRotation = AimDirection.Rotation();
 	auto DeltaRotation = AimRotation - BarrelRotation;
 
-	Barrel->Elevate(5);
+	Barrel->Elevate(DeltaRotation.Pitch);
+}
+
+void UTankAimingComponent::MoveTurret(FVector AimDirection)
+{
+	auto BarrelRotation = Barrel->GetForwardVector().Rotation();
+	auto AimRotation = AimDirection.Rotation();
+	auto DeltaRotation = AimRotation - BarrelRotation;
+
+	Turret->Rotate(DeltaRotation.Yaw);
 }
 

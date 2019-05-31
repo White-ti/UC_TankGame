@@ -56,10 +56,11 @@ bool ATank_PlayerController::GetSightRayHitLocation(FVector& OutHitLocation) con
 	if (GetLookDirection(ScreenLocation, LookDirection)) {
 		//UE_LOG(LogTemp, Warning, TEXT("Look Direction is %s"), *(LookDirection.ToString()));
 		GetLookVectorHitLocation(LookDirection, OutHitLocation);
+		return true;
 	}
 
 	// Line trace to maximum range
-	return true;
+	return false;
 }
 
 bool ATank_PlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& LookDirection) const {

@@ -19,22 +19,3 @@ ATank::ATank()
 	//TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
 }
 
-void ATank::AimAt(FVector HitLocation) {
-	if (!TankAimingComponent) { return; }
-	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
-}
-
-void ATank::Fire() {
-	//auto Time = GetWorld()->GetTimeSeconds();
-	//UE_LOG(LogTemp, Warning, TEXT("%f: Tank Fires"), Time);
-	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
-
-	if (Barrel && isReloaded) {
-
-		//Spawn a projectile
-		auto Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketLocation(FName("Socket")), Barrel->GetSocketRotation(FName("Socket")));
-
-		Projectile->LaunchProjectile(LaunchSpeed);
-		LastFireTime = FPlatformTime::Seconds();
-	}
-}

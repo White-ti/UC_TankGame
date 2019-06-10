@@ -34,6 +34,7 @@ public:
 	//void SetTrackReference(UTankTrack* TrackToSet);
 
 protected:
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)

@@ -10,6 +10,7 @@ void UTankTrack::BeginPlay() {
 
 UTankTrack::UTankTrack() {
 	PrimaryComponentTick.bCanEverTick = false;
+	SetNotifyRigidBodyCollision(true);
 }
 
 void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {

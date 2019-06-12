@@ -12,7 +12,8 @@ UENUM()
 enum class EFiringState : uint8 {
 	Reloading,
 	Aiming,
-	Locked
+	Locked,
+	OutOfAmmo
 };
 
 //forward Declaration
@@ -34,6 +35,11 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	void Fire();
+
+	EFiringState GetFiringState() const;
+
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	int GetRoundsLeft();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
@@ -67,4 +73,6 @@ private:
 		float LaunchSpeed = 10000; //100m/s
 
 	FVector AimDirection;
+
+	int RoundsLeft = 3;
 };

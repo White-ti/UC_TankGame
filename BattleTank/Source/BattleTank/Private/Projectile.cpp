@@ -2,6 +2,8 @@
 
 
 #include "Projectile.h"
+#include "Kismet/GameplayStatics.h"
+#include "GameFramework/DamageType.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 
 // Sets default values
@@ -25,6 +27,9 @@ AProjectile::AProjectile()
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(FName("Projectile Movement"));
 	ProjectileMovement->bAutoActivate = false;
 
+	ExplosionForce = CreateDefaultSubobject<URadialForceComponent>(FName("Explosion"));
+	ExplosionForce->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+
 }
 
 // Called when the game starts or when spawned
@@ -43,4 +48,24 @@ void AProjectile::LaunchProjectile(float Speed) {
 void AProjectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit) {
 	LaunchBlast->Deactivate();
 	ImpactBlast->Activate();
+	ExplosionForce->FireImpulse();
+
+	SetRootComponent(ImpactBlast);
+	CollisionMesh->DestroyComponent();
+
+	UGameplayStatics::ApplyRadialDamage(
+		this,
+		ProjectileDamage,
+		GetActorLocation(),
+		ExplosionForce->Radius,
+		UDamageType::StaticClass(),
+		TArray<AActor*>()
+		);
+
+	FTimerHandle Timer;
+	GetWorld()->GetTimerManager().SetTimer(Timer, this, &AProjectile::OnTimerExpire, DestroyDelay, false);
+}
+
+void AProjectile::OnTimerExpire() {
+	Destroy();
 }

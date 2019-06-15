@@ -4,6 +4,7 @@
 #include "BattleTank.h"
 #include "GameFramework/Actor.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 void ATankAIController::BeginPlay() {
 
@@ -13,6 +14,17 @@ void ATankAIController::BeginPlay() {
 	//auto PlayerTank = GetPlayerTank();
 	//if(!PlayerTank){ UE_LOG(LogTemp, Warning, TEXT("AI Cant find human")); }
 	//else { UE_LOG(LogTemp, Warning, TEXT("AI Tank is %s"), *(PlayerTank->GetName())); }
+}
+
+void ATankAIController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+	if (InPawn) {
+		auto PossessedTank = Cast<ATank>(InPawn);
+		if (!ensure(PossessedTank)) { return; }
+
+		PossessedTank->OnDeath.AddUniqueDynamic(this, &ATankAIController::OnPossessedTankDeath);
+	}
 }
 
 void  ATankAIController::Tick(float DeltaTime) {
@@ -34,4 +46,10 @@ void  ATankAIController::Tick(float DeltaTime) {
 			AimingComponent->Fire(); //TODO limit firing rate
 		}
 
+}
+
+void ATankAIController::OnPossessedTankDeath()
+{
+	if (!GetPawn()) {return;	}
+	GetPawn()->DetachFromControllerPendingDestroy();
 }

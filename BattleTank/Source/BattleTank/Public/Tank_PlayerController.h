@@ -41,6 +41,11 @@ private:
 
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
 
+	void SetPawn(APawn * InPawn);
+
 	UPROPERTY(EditDefaultsOnly)
 		float LineTraceRange = 10000000.0f;
+
+	UFUNCTION()
+		void OnPossessedTankDeath();
 };

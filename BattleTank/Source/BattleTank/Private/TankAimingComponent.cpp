@@ -29,7 +29,7 @@ void UTankAimingComponent::Initialise(UTankBarrel * BarrelToSet, UTankTurret * T
 	Turret = TurretToSet;
 }
 
-void UTankAimingComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction * ThisTickFunction)
+void UTankAimingComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	if (RoundsLeft <= 0) { FiringState = EFiringState::OutOfAmmo; }
 	else if ((FPlatformTime::Seconds() - LastFireTime) < ReloadTimeInSeconds) { FiringState = EFiringState::Reloading; }

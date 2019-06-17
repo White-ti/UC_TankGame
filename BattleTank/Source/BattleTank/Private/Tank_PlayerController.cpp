@@ -10,6 +10,7 @@ void ATank_PlayerController::BeginPlay() {
 
 	Super::BeginPlay();
 	//UE_LOG(LogTemp, Warning, TEXT("Player Controller Begin Play"));
+	if (!GetPawn()) return;
 	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (ensure(AimingComponent)) {
 		FoundAimingComponent(AimingComponent);
